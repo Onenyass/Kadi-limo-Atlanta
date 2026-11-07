@@ -1,6 +1,12 @@
 /** Runtime configuration read from environment variables (see .env.example). */
 
-const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+// On Netlify, URL (main site address) and DEPLOY_PRIME_URL (branch/preview address)
+// are provided at build time, so canonical links work without manual setup.
+const rawSiteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.CONTEXT === "production" ? process.env.URL : process.env.DEPLOY_PRIME_URL) ||
+  process.env.URL
+)?.trim();
 
 export const siteConfig = {
   /** Base URL for canonical/OG links. Falls back to localhost when unset. */

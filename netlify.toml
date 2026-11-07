@@ -1,9 +1,25 @@
 # Netlify detects Next.js automatically and applies its Next.js runtime.
-# Environment variables (Sanity project ID, form mode, site URL) are set in
-# the Netlify dashboard: Site configuration -> Environment variables.
+# Values below are preview-safe defaults. Note: on Netlify, variables set in this
+# file take precedence over the same variables set in the dashboard, so change
+# them here (in a reviewed commit) when the owner approves launch.
 [build]
   command = "npm run build"
   publish = ".next"
 
 [build.environment]
   NODE_VERSION = "22"
+  # Keep every Netlify deploy out of search engines until the owner approves launch.
+  NEXT_PUBLIC_SITE_INDEXABLE = "false"
+  # Submit the ride-request form to Netlify Forms. The form only shows a success
+  # message when Netlify accepts the submission; otherwise it shows an error and
+  # a copyable request summary.
+  NEXT_PUBLIC_FORM_MODE = "netlify"
+  # NEXT_PUBLIC_SITE_URL is optional: Netlify's own URL / DEPLOY_PRIME_URL are used
+  # automatically when it is not set (see src/lib/config.ts).
+
+# Extra safeguard: tell crawlers not to index any page of the preview.
+# Remove only at launch, together with NEXT_PUBLIC_SITE_INDEXABLE=true.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"

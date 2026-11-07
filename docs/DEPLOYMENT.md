@@ -9,8 +9,7 @@ touch `kadilimoatl.com`.
 1. Sign in at <https://app.netlify.com>.
 2. **Add new site → Import an existing project → GitHub**, and pick
    `onenyass/kadi-limo-atlanta`.
-3. Branch to deploy: `main` (or the review branch `claude/kadi-limo-website-cj9hfl`
-   until it is merged).
+3. Branch to deploy: `claude/kadi-limo-website-cj9hfl`, the branch that holds the site.
 4. Build settings are read from `netlify.toml` (`npm run build`, Node 22). Netlify
    detects Next.js and applies its Next.js runtime automatically.
 5. **Do not add a custom domain.** Leave the site on its `*.netlify.app` address
@@ -18,21 +17,29 @@ touch `kadilimoatl.com`.
 
 ## 2. Environment variables
 
-**Site configuration → Environment variables** (see `.env.example`):
+No dashboard variables are required for the preview. `netlify.toml` already sets:
 
-| Variable                         | Value for preview                     | Notes |
-| -------------------------------- | ------------------------------------- | ----- |
-| `NEXT_PUBLIC_SITE_URL`           | your `https://<name>.netlify.app` URL | Canonical/OG links and sitemap |
-| `NEXT_PUBLIC_SITE_INDEXABLE`     | `false`                               | Keeps the preview out of search engines |
-| `NEXT_PUBLIC_FORM_MODE`          | `preview`, then `netlify` after step 3 | See below |
-| `NEXT_PUBLIC_SANITY_PROJECT_ID`  | *(empty until Sanity is set up)*      | See [CMS.md](CMS.md) |
-| `NEXT_PUBLIC_SANITY_DATASET`     | `production`                          | |
-| `SANITY_API_READ_TOKEN`          | *(only for a private dataset)*        | Mark as secret in Netlify |
+| Variable                     | Value     | Effect |
+| ---------------------------- | --------- | ------ |
+| `NEXT_PUBLIC_SITE_INDEXABLE` | `false`   | `noindex` meta tags + `robots.txt` disallow (plus an `X-Robots-Tag` header) |
+| `NEXT_PUBLIC_FORM_MODE`      | `netlify` | Ride-request form submits to Netlify Forms |
 
-`NEXT_PUBLIC_*` values are compiled into the build, so **trigger a new deploy** after
-changing them.
+The site URL for canonical/Open Graph links comes automatically from Netlify's
+`URL` / `DEPLOY_PRIME_URL`. Set `NEXT_PUBLIC_SITE_URL` only to override it.
 
-## 3. Turn on the ride-request form (Netlify Forms)
+Optional, in **Site configuration → Environment variables** (see `.env.example`):
+
+| Variable                        | When |
+| ------------------------------- | ---- |
+| `NEXT_PUBLIC_SANITY_PROJECT_ID` | After the Sanity project exists ([CMS.md](CMS.md)) |
+| `NEXT_PUBLIC_SANITY_DATASET`    | `production` (default) |
+| `SANITY_API_READ_TOKEN`         | Only for a private dataset; mark it secret |
+
+Variables in `netlify.toml` take precedence over dashboard variables with the same
+name, so change the two values above in `netlify.toml` itself. `NEXT_PUBLIC_*`
+values are compiled into the build, so **redeploy** after changing any of them.
+
+## 3. Ride-request form (Netlify Forms)
 
 How it works:
 
@@ -44,22 +51,22 @@ How it works:
 - Spam protection: a hidden honeypot field (`bot-field`, declared with
   `netlify-honeypot`) and Netlify's built-in spam filtering.
 
-In `preview` mode (the default) nothing is sent. The form is labelled "Preview", and
-submitting produces a copyable request summary.
+After the first deploy:
 
-To enable sending:
-
-1. Deploy once, then open **Forms** in the Netlify dashboard. Enable form detection if
-   it asks, and redeploy.
+1. Open **Forms** in the Netlify dashboard. If it shows **Enable form detection**,
+   click it, then **Deploys → Trigger deploy** so the form is registered.
 2. Confirm a form named **ride-request** is listed.
-3. Set `NEXT_PUBLIC_FORM_MODE=netlify` and redeploy.
-4. Submit a test request on the preview site. Confirm it appears under
-   **Forms → ride-request** and that the site shows "your request was received".
-5. **Notifications:** in **Site configuration → Notifications → Emails and webhooks →
-   Form submission notifications**, add an email notification to the owner's address
-   (the owner chooses the address; it is not stored in this repo).
-6. Optional: under **Forms → Settings**, review spam filtering or add reCAPTCHA if spam
+3. Submit a test request on the preview site. It should say "your request was received",
+   and the entry should appear under **Forms → ride-request**. Until form detection is
+   enabled, the site shows "could not be sent" instead. That is expected and honest.
+4. **Notifications:** under **Site configuration → Notifications → Emails and webhooks →
+   Form submission notifications**, add an email notification to the owner's address.
+   The address is chosen by the owner and is not stored in this repo.
+5. Optional: under **Forms → Settings**, review spam filtering or add reCAPTCHA if spam
    becomes a problem.
+
+For local development, `NEXT_PUBLIC_FORM_MODE=preview` (the `.env.example` default)
+turns the form into a copyable-summary preview that sends nothing.
 
 ## 4. Before going live (owner approval required)
 
