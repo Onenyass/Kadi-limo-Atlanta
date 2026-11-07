@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Netlify form definitions</title>
+  </head>
+  <body>
+    <!--
+      Static form definition for Netlify Forms. Netlify scans this file at deploy
+      time to register the "ride-request" form. The real form lives in
+      src/components/RideRequestForm.tsx and POSTs here with fetch().
+      Field names must stay in sync with that component.
+    -->
+    <form name="ride-request" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="ride-request" />
+      <input name="bot-field" />
+      <input name="name" />
+      <input name="contact" />
+      <input name="service" />
+      <input name="vehicle" />
+      <input name="date" />
+      <input name="time" />
+      <input name="pickup" />
+      <input name="destination" />
+      <input name="passengers" />
+      <textarea name="notes"></textarea>
+    </form>
+  </body>
+</html>

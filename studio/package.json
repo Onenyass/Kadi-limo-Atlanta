@@ -1,0 +1,26 @@
+{
+  "name": "kadi-limo-studio",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Sanity Studio (CMS) for the Kadi Limo & Transportation website.",
+  "scripts": {
+    "dev": "sanity dev",
+    "build": "sanity build",
+    "deploy": "sanity deploy",
+    "import-seed": "sanity dataset import seed/seed.ndjson production --missing"
+  },
+  "engines": {
+    "node": ">=20.19"
+  },
+  "dependencies": {
+    "@sanity/vision": "^6.22.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sanity": "^6.22.0",
+    "styled-components": "^6.6.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "typescript": "^5.9.3"
+  }
+}
