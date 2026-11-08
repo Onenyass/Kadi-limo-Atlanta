@@ -6,6 +6,11 @@
   command = "npm run build"
   publish = ".next"
 
+# Netlify's Next.js adapter. Declared explicitly so it is applied even on sites
+# created via the API (dashboard-created sites add it automatically).
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 [build.environment]
   NODE_VERSION = "22"
   # Keep every Netlify deploy out of search engines until the owner approves launch.
