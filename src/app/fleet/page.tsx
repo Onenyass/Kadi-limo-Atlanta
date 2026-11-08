@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { FleetIndex } from "@/components/FleetIndex";
+import { VehicleCaption, VehicleFrame, type FeatureLayout } from "@/components/FleetFeature";
 import { PageHead } from "@/components/PageHead";
-import { RepImage } from "@/components/RepImage";
-import { Reveal } from "@/components/Reveal";
 import { Scene } from "@/components/Scene";
-import { getFleet } from "@/lib/content";
+import type { Vehicle } from "@/content/types";
+import { getFleet, getServices } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -14,19 +14,52 @@ export const metadata: Metadata = pageMetadata({
   path: "/fleet",
 });
 
+type Group = { type: "full" | "pair" | "print" | "pano" | "finale"; items: { v: Vehicle; i: number }[] };
+
+/**
+ * Editorial sequence: each vehicle gets a different composition so the page
+ * reads like a printed portfolio, not a list. Extra CMS vehicles fall back to
+ * alternating "print" layouts.
+ */
+function compose(fleet: Vehicle[]): Group[] {
+  const items = fleet.map((v, i) => ({ v, i }));
+  const groups: Group[] = [];
+  const plan: Group["type"][] = ["full", "pair", "print", "pano", "finale"];
+  let cursor = 0;
+  for (const type of plan) {
+    if (cursor >= items.length) break;
+    if (type === "pair") {
+      if (cursor + 1 < items.length) {
+        groups.push({ type, items: items.slice(cursor, cursor + 2) });
+        cursor += 2;
+      }
+      continue;
+    }
+    groups.push({ type, items: [items[cursor]] });
+    cursor += 1;
+  }
+  while (cursor < items.length) groups.push({ type: "print", items: [items[cursor++]] });
+  return groups;
+}
+
 export default async function FleetPage() {
-  const fleet = await getFleet();
+  const [fleet, services] = await Promise.all([getFleet(), getServices()]);
+  const total = fleet.length;
   const usingRepresentative = fleet.some((v) => v.image?.isRepresentative);
   const usingIllustrations = fleet.some((v) => !v.image);
-  const total = String(fleet.length).padStart(2, "0");
-  const closing = fleet.find((v) => v.category === "luxury" && v.image) ?? fleet.find((v) => v.image);
+  const closing = fleet.find((v) => v.category === "suv" && v.image && v.slug !== fleet[0]?.slug) ?? fleet[0];
+  const groups = compose(fleet);
+
+  const caption = (v: Vehicle, i: number, layout: FeatureLayout) => (
+    <VehicleCaption vehicle={v} index={i} total={total} services={services} layout={layout} />
+  );
 
   return (
     <>
       <PageHead num="00" label="The fleet" lines={["Black vehicles,", <em key="e">every kind of trip.</em>]}>
         <p className="lede">
-          From full-size SUVs to a classic stretch limousine, choose the vehicle that suits your
-          trip, or tell us your plans and we’ll recommend one.
+          SUVs and sedans for everyday travel, a stretch limousine and a Rolls-Royce for the
+          occasions that call for them. Choose one, or tell us your plans and we’ll recommend one.
         </p>
         <p className="note note--night">
           <strong>Availability varies by date.</strong> We confirm which vehicles are available,
@@ -37,54 +70,69 @@ export default async function FleetPage() {
         </p>
       </PageHead>
 
-      <section className="night-deep" aria-label="Vehicles">
-        <div className="container">
-          <ol>
-            {fleet.map((v, i) => (
-              <li key={v.slug} id={v.slug} className="plate">
-                <Reveal variant="curtain" className="plate__media">
-                  <RepImage
-                    image={v.image}
-                    category={v.category}
-                    name={v.name}
-                    sizes="(min-width: 960px) 62vw, 100vw"
-                    parallax
-                    priority={i === 0}
-                  />
-                </Reveal>
-                <Reveal className="plate__body" delay={150}>
-                  <div className="plate__index">
-                    <span className="plate__num" aria-hidden="true">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                    <span className="small-caps">
-                      {v.kind || "Vehicle"} <span aria-hidden="true">· {String(i + 1).padStart(2, "0")}/{total}</span>
-                    </span>
-                  </div>
-                  <h2 className="plate__name">{v.name}</h2>
-                  <p className="plate__desc">{v.description}</p>
-                  {v.confirmedDetails.length > 0 && (
-                    <ul className="chips" aria-label={`${v.name} details`}>
-                      {v.confirmedDetails.map((d) => (
-                        <li key={d}>{d}</li>
-                      ))}
-                    </ul>
-                  )}
-                  <div>
-                    <Link
-                      className="link-arrow"
-                      href={`/contact?vehicle=${encodeURIComponent(v.slug)}`}
-                      aria-label={`Request availability for the ${v.name}`}
-                    >
-                      Request availability <span className="link-arrow__line" aria-hidden="true" />
-                    </Link>
-                  </div>
-                </Reveal>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+      <FleetIndex vehicles={fleet} />
+
+      <div className="fleet-seq">
+        {groups.map((g) => {
+          const key = g.items.map((x) => x.v.slug).join("-");
+          if (g.type === "full") {
+            const { v, i } = g.items[0];
+            return (
+              <section key={key} id={v.slug} className="fseq fseq--full night-deep" aria-label={v.name}>
+                <VehicleFrame vehicle={v} layout="full" sizes="100vw" priority={i === 0} />
+                <div className="container">{caption(v, i, "full")}</div>
+              </section>
+            );
+          }
+          if (g.type === "pair") {
+            return (
+              <section key={key} className="fseq fseq--pair night-deep" aria-label="Full-size SUVs">
+                <div className="container fpair">
+                  {g.items.map(({ v, i }, n) => {
+                    const layout: FeatureLayout = n === 0 ? "pair-lead" : "pair-follow";
+                    return (
+                      <article key={v.slug} id={v.slug} className={`fpair__item fpair__item--${n === 0 ? "lead" : "follow"}`}>
+                        <VehicleFrame vehicle={v} layout={layout} sizes="(min-width: 960px) 55vw, 100vw" />
+                        {caption(v, i, layout)}
+                      </article>
+                    );
+                  })}
+                </div>
+              </section>
+            );
+          }
+          if (g.type === "print") {
+            const { v, i } = g.items[0];
+            const flip = i % 2 === 1;
+            return (
+              <section key={key} id={v.slug} className={`fseq fseq--print ivory${flip ? " fseq--flip" : ""}`} aria-label={v.name}>
+                <div className="container fprint">
+                  <VehicleFrame vehicle={v} layout="print" sizes="(min-width: 960px) 62vw, 100vw" />
+                  {caption(v, i, "print")}
+                </div>
+              </section>
+            );
+          }
+          if (g.type === "pano") {
+            const { v, i } = g.items[0];
+            return (
+              <section key={key} id={v.slug} className="fseq fseq--pano night-deep" aria-label={v.name}>
+                <VehicleFrame vehicle={v} layout="pano" sizes="100vw" />
+                <div className="container">{caption(v, i, "pano")}</div>
+              </section>
+            );
+          }
+          const { v, i } = g.items[0];
+          return (
+            <section key={key} id={v.slug} className="fseq fseq--finale ivory ivory--light" aria-label={v.name}>
+              <div className="container ffinale">
+                <VehicleFrame vehicle={v} layout="finale" sizes="(min-width: 960px) 80vw, 100vw" />
+                {caption(v, i, "finale")}
+              </div>
+            </section>
+          );
+        })}
+      </div>
 
       <Scene
         vehicle={closing}

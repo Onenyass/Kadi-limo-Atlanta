@@ -34,7 +34,19 @@ export const vehicle = defineType({
       description:
         "Only facts you have confirmed for this vehicle, e.g. “Seats up to 6”. Leave empty if unsure — nothing is shown when empty.",
     }),
-    defineField({ name: "image", title: "Photo", type: "imageWithAlt" }),
+    defineField({
+      name: "suitedTo",
+      title: "Suited to (services)",
+      type: "array",
+      of: [defineArrayMember({ type: "reference", to: [{ type: "service" }] })],
+      description: "Services this vehicle suits. Shown on the Fleet page as suggested uses, not as availability.",
+    }),
+    defineField({
+      name: "image",
+      title: "Photo",
+      type: "imageWithAlt",
+      description: "Landscape, about 4:3. Ideally shows the vehicle in use (arriving at a hotel, airport or event).",
+    }),
     defineField({ name: "featured", title: "Feature on home page", type: "boolean", initialValue: false }),
     defineField({ name: "order", title: "Sort order", type: "number" }),
   ],

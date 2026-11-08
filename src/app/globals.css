@@ -1448,71 +1448,419 @@ body[data-menu-open="true"] {
   margin-top: clamp(40px, 5vw, 64px);
 }
 
-/* -------------------------------------------------- fleet plates (page) */
+/* ------------------------------------------------- fleet page sequence */
 
-.plate {
-  position: relative;
-  display: grid;
-  gap: 32px;
-  padding-block: clamp(56px, 8vw, 120px);
-  border-top: 1px solid var(--rule-night);
+/* Lift shadows slightly so black vehicles read clearly on the dark design. */
+.vframe__img img {
+  filter: brightness(1.14) contrast(1.06) saturate(1.04);
+  transition: transform 1200ms var(--ease-out);
 }
 
-@media (min-width: 960px) {
-  .plate {
-    grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.65fr);
-    gap: 72px;
-    align-items: center;
-  }
-  .plate:nth-child(even) {
-    grid-template-columns: minmax(0, 0.65fr) minmax(0, 1.35fr);
-  }
-  .plate:nth-child(even) .plate__media {
-    order: 2;
-  }
-}
-
-.plate__media {
+.vframe {
   position: relative;
-  aspect-ratio: 4 / 3;
   overflow: hidden;
   background: var(--night-950);
 }
 
-.plate__media img {
-  object-position: 50% 45%;
+.vframe__img {
+  position: absolute;
+  inset: 0;
 }
 
-.plate__body {
+.vframe:hover .vframe__img img {
+  transform: scale(1.025);
+}
+
+.vframe--full {
+  aspect-ratio: 4 / 3;
+}
+
+.vframe--pair-lead,
+.vframe--pair-follow,
+.vframe--print,
+.vframe--finale {
+  aspect-ratio: 4 / 3;
+}
+
+.vframe--pano {
+  aspect-ratio: 16 / 10;
+}
+
+.vframe--full img,
+.vframe--pair-lead img,
+.vframe--pair-follow img,
+.vframe--print img,
+.vframe--finale img {
+  object-position: 50% 48%;
+}
+
+.vframe--pano img {
+  object-position: 50% 56%;
+}
+
+@media (min-width: 960px) {
+  .vframe--full {
+    aspect-ratio: 16 / 8.2;
+  }
+  .vframe--pano {
+    aspect-ratio: 21 / 8.6;
+  }
+  .vframe--finale {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+/* Sticky fleet index with thumbnails. */
+.fleet-index {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 20;
+  background: var(--night-950);
+  border-block: 1px solid var(--rule-night);
+  transition: top 500ms var(--ease-out);
+}
+
+body:has(.site-header[data-hidden="true"]) .fleet-index {
+  top: 0;
+}
+
+.fleet-index__list {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 10px var(--gutter);
+}
+
+.fleet-index__list::-webkit-scrollbar {
+  display: none;
+}
+
+.fleet-index__list li {
+  flex: none;
+}
+
+@media (min-width: 1100px) {
+  .fleet-index__list {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    margin: 0;
+    padding-inline: 0;
+  }
+}
+
+.fleet-index a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 6px 12px 6px 6px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--mist-300);
+  transition: color var(--dur-fast), border-color var(--dur-fast), background-color var(--dur-fast);
+}
+
+.fleet-index a:hover {
+  color: var(--text-night);
+  border-color: var(--rule-night);
+}
+
+.fleet-index a[aria-current="true"] {
+  color: var(--text-night);
+  border-color: var(--rule-night-strong);
+  background: var(--night-800);
+}
+
+.fleet-index__thumb {
+  position: relative;
+  flex: none;
+  width: 56px;
+  height: 40px;
+  overflow: hidden;
+  background: var(--night-850);
+}
+
+.fleet-index__thumb img {
+  object-fit: cover;
+  filter: brightness(1.15);
+  opacity: 0.7;
+  transition: opacity var(--dur-fast);
+}
+
+.fleet-index a[aria-current="true"] .fleet-index__thumb img,
+.fleet-index a:hover .fleet-index__thumb img {
+  opacity: 1;
+}
+
+.fleet-index__num {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: var(--brass-500);
+}
+
+.fleet-index a[aria-current="true"] .fleet-index__num {
+  color: var(--brass-300);
+}
+
+@media (min-width: 1100px) {
+  .fleet-index a {
+    white-space: normal;
+    line-height: 1.2;
+    font-size: 0.75rem;
+    padding-right: 8px;
+  }
+  .fleet-index__thumb {
+    width: 48px;
+    height: 36px;
+  }
+}
+
+/* Sequence sections. */
+.fseq {
+  position: relative;
+  scroll-margin-top: calc(var(--header-h) + 64px);
+}
+
+.fpair__item {
+  scroll-margin-top: calc(var(--header-h) + 64px);
+}
+
+.fseq--full {
+  padding-bottom: clamp(80px, 11vw, 160px);
+}
+
+.fseq--full .vcap,
+.fseq--pano .vcap {
+  margin-top: clamp(32px, 5vw, 64px);
+}
+
+@media (min-width: 960px) {
+  .fseq--full .vcap,
+  .fseq--pano .vcap {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    column-gap: 80px;
+    align-items: start;
+  }
+  .fseq--full .vcap > :nth-child(-n + 3),
+  .fseq--pano .vcap > :nth-child(-n + 3) {
+    grid-column: 1;
+  }
+  .fseq--full .vcap > :nth-child(n + 4),
+  .fseq--pano .vcap > :nth-child(n + 4) {
+    grid-column: 2;
+  }
+  .fseq--full .vcap > .vcap__desc,
+  .fseq--pano .vcap > .vcap__desc {
+    grid-row: 1 / span 2;
+    padding-top: 6px;
+  }
+}
+
+/* Offset pair: a large lead and a smaller follower set lower. */
+.fseq--pair {
+  padding-block: clamp(24px, 4vw, 48px) clamp(80px, 11vw, 160px);
+  border-top: 1px solid var(--rule-night);
+}
+
+.fpair {
   display: grid;
-  gap: 18px;
-  align-content: center;
+  gap: clamp(72px, 10vw, 120px);
+  padding-top: clamp(56px, 8vw, 112px);
 }
 
-.plate__index {
+@media (min-width: 960px) {
+  .fpair {
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 64px;
+    align-items: start;
+  }
+  .fpair__item--follow {
+    margin-top: clamp(120px, 16vw, 240px);
+  }
+}
+
+.fpair__item {
+  display: grid;
+  gap: clamp(28px, 3vw, 40px);
+}
+
+/* Framed print on ivory: the dark photograph reads like a print on paper. */
+.fseq--print {
+  padding-block: clamp(96px, 12vw, 176px);
+}
+
+.fprint {
+  display: grid;
+  gap: clamp(36px, 5vw, 56px);
+}
+
+@media (min-width: 960px) {
+  .fprint {
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.8fr);
+    gap: 80px;
+    align-items: center;
+  }
+  .fseq--flip .fprint {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.5fr);
+  }
+  .fseq--flip .vframe {
+    order: 2;
+  }
+}
+
+.fseq--print .vframe,
+.fseq--finale .vframe {
+  box-shadow: 0 40px 80px -40px rgba(10, 15, 13, 0.55);
+}
+
+.fseq--pano {
+  padding-block: clamp(96px, 12vw, 176px);
+}
+
+.fseq--finale {
+  padding-block: clamp(96px, 12vw, 176px);
+}
+
+.ffinale {
+  display: grid;
+  gap: clamp(40px, 5vw, 64px);
+  justify-items: center;
+}
+
+.ffinale .vframe {
+  width: 100%;
+  max-width: 1080px;
+}
+
+.vcap--finale {
+  text-align: center;
+  justify-items: center;
+  max-width: 40rem;
+}
+
+.vcap--finale .vcap__meta {
+  justify-content: center;
+}
+
+.vcap--finale .vcap__suited ul {
+  justify-content: center;
+}
+
+/* Caption. */
+.vcap {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.vcap__meta {
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
   gap: 16px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--rule-night);
   color: var(--brass-400);
 }
 
-.plate__num {
+.ivory .vcap__meta {
+  color: var(--brass-700);
+}
+
+.vcap__num {
   font-family: var(--font-display);
-  font-size: clamp(3rem, 6vw, 5rem);
+  font-size: 2.25rem;
   line-height: 0.8;
 }
 
-.plate__name {
-  font-size: clamp(2.5rem, 4.6vw, 4rem);
-  line-height: 0.98;
+.vcap__name {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  line-height: 0.96;
+  letter-spacing: -0.025em;
 }
 
-.plate__desc {
+.fpair__item--follow .vcap__name {
+  font-size: clamp(2.25rem, 3.6vw, 3.25rem);
+}
+
+.vcap__use {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+  line-height: 1.2;
+}
+
+.vcap__desc {
+  max-width: 34rem;
   color: var(--mist-300);
-  max-width: 30rem;
+}
+
+.ivory .vcap__desc {
+  color: var(--stone-700);
+}
+
+.vcap__suited {
+  display: grid;
+  gap: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule-night);
+  max-width: 34rem;
+}
+
+.ivory .vcap__suited {
+  border-top-color: var(--rule-ivory);
+}
+
+.vcap__suited-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--mist-500);
+}
+
+.ivory .vcap__suited-label {
+  color: var(--stone-700);
+}
+
+.vcap__suited ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+
+.vcap__suited a {
+  font-size: 0.9375rem;
+  text-decoration: underline;
+  text-decoration-color: var(--rule-night-strong);
+  text-underline-offset: 5px;
+  transition: text-decoration-color var(--dur-fast), color var(--dur-fast);
+}
+
+.vcap__suited a:hover {
+  text-decoration-color: currentColor;
+  color: var(--brass-300);
+}
+
+.ivory .vcap__suited a {
+  text-decoration-color: var(--rule-ivory-strong);
+}
+
+.ivory .vcap__suited a:hover {
+  color: var(--brass-700);
+}
+
+.vcap__actions {
+  margin-top: 8px;
+}
+
+@media (max-width: 560px) {
+  .vcap__actions .btn {
+    width: 100%;
+  }
 }
 
 .chips {
@@ -2042,6 +2390,11 @@ body[data-menu-open="true"] {
 .contact-aside {
   display: grid;
   gap: 36px;
+}
+
+/* Target of "Request availability" links (/contact?vehicle=…#request). */
+#request {
+  scroll-margin-top: calc(var(--header-h) + 32px);
 }
 
 /* Phones and tablets: the request comes first, details follow. */

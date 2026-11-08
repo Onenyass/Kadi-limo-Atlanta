@@ -154,6 +154,7 @@ type SanityVehicle = {
   kind?: string;
   description?: string;
   confirmedDetails?: string[];
+  suitedTo?: string[];
   image?: SanityImage;
   featured?: boolean;
 };
@@ -163,7 +164,8 @@ const categories: VehicleCategory[] = ["suv", "sedan", "limousine", "luxury"];
 export const getFleet = cache(async (): Promise<Vehicle[]> => {
   const rows = await fetchSanity<SanityVehicle[]>(
     `*[_type == "vehicle" && defined(slug.current)] | order(coalesce(order, 999) asc, name asc){
-      "slug": slug.current, name, category, kind, description, confirmedDetails, featured, image${imageProjection}
+      "slug": slug.current, name, category, kind, description, confirmedDetails, featured,
+      "suitedTo": suitedTo[]->slug.current, image${imageProjection}
     }`,
   );
   if (!rows || rows.length === 0) return seedFleet;
@@ -176,6 +178,7 @@ export const getFleet = cache(async (): Promise<Vehicle[]> => {
       kind: str(r.kind, ""),
       description: str(r.description, ""),
       confirmedDetails: strList(r.confirmedDetails, []),
+      suitedTo: strList(r.suitedTo, []),
       image: mapImage(r.image, `${r.name} — black chauffeured vehicle`),
       featured: Boolean(r.featured),
     }));

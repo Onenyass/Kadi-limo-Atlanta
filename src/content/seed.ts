@@ -166,6 +166,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "A full-size SUV with a confident presence, well suited to airport transfers, executive travel and evenings out.",
     confirmedDetails: [],
+    suitedTo: ["airport-hotel-transfers", "corporate-executive", "birthdays-celebrations"],
     image: fleetImage("cadillac-escalade", "Representative image of a black Cadillac Escalade SUV in a dark studio with warm rim lighting"),
     featured: true,
   },
@@ -177,6 +178,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "A practical, spacious SUV that works well for airport runs, family trips and small groups traveling together.",
     confirmedDetails: [],
+    suitedTo: ["airport-hotel-transfers", "group-transportation", "point-to-point"],
     image: fleetImage("chevrolet-suburban", "Representative image of a black Chevrolet Suburban SUV in a dark studio with warm rim lighting"),
     featured: false,
   },
@@ -188,6 +190,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "A comfortable full-size SUV for business travel, airport transfers and point-to-point rides around Atlanta.",
     confirmedDetails: [],
+    suitedTo: ["corporate-executive", "airport-hotel-transfers", "point-to-point"],
     image: fleetImage("gmc-yukon", "Representative image of a black GMC Yukon SUV, front three-quarter view, in a dark studio"),
     featured: false,
   },
@@ -199,6 +202,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "A refined sedan for one-on-one business travel, airport transfers and a quiet ride to dinner.",
     confirmedDetails: [],
+    suitedTo: ["corporate-executive", "airport-hotel-transfers", "point-to-point"],
     image: fleetImage("cadillac-sedan", "Representative image of a black Cadillac sedan in a dark studio with warm rim lighting"),
     featured: true,
   },
@@ -210,6 +214,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "A classic choice for weddings, proms, birthdays and celebrations where the ride is part of the occasion.",
     confirmedDetails: [],
+    suitedTo: ["proms-formal-events", "weddings", "birthdays-celebrations"],
     image: fleetImage("stretch-limousine", "Representative image of a black stretch limousine in a dark studio with warm rim lighting"),
     featured: true,
   },
@@ -221,6 +226,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "Reserved for the moments that call for something special — wedding arrivals, anniversaries and milestone events.",
     confirmedDetails: [],
+    suitedTo: ["weddings", "birthdays-celebrations"],
     image: fleetImage("rolls-royce", "Representative image of a black Rolls-Royce sedan in a dark studio with warm rim lighting"),
     featured: true,
   },

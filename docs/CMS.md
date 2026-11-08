@@ -11,7 +11,7 @@ project to point at.
 | ----------------- | -------- |
 | **Site settings** | Phone, email, service area, search description, home hero and intro, About page copy, contact intro, privacy policy |
 | **Services**      | Title, summary, description, "good for" tags, availability note, image, home-page feature, sort order |
-| **Fleet**         | Name, type label, description, confirmed details (seating etc.), photo, home-page feature, sort order |
+| **Fleet**         | Name, type label, description, confirmed details (seating etc.), "suited to" services, photo, home-page feature, sort order |
 
 Empty CMS fields fall back to the seed text. Phone, email and service area show
 "coming soon" placeholders until they're filled in.
@@ -56,6 +56,10 @@ labelled "Representative image" on the site. To replace them, either:
   landscape, about 4:3), and update its alt text or `isRepresentative` flag in
   `src/content/seed.ts` if needed. Set `isRepresentative: false` only for photos of
   Kadi's own vehicles.
+- **Contextual photos:** the Fleet page is designed for photos of each vehicle in use (an SUV
+  at a hotel or airport, a sedan for executive travel, a limousine outside an event). Replace
+  the file with the same name and keep the "Representative image" flag on unless it is
+  Kadi's own vehicle.
 - **With the CMS:** upload a photo to the vehicle in Sanity, as below. A CMS photo
   takes the place of the built-in image.
 

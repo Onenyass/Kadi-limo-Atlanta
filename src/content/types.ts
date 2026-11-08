@@ -26,6 +26,11 @@ export type Vehicle = {
    * Leave empty until the owner supplies them; nothing is shown when empty.
    */
   confirmedDetails: string[];
+  /**
+   * Slugs of existing services this vehicle suits, drawn from its description.
+   * Descriptive only: not a statement of availability.
+   */
+  suitedTo: string[];
   image?: ImageAsset;
   featured: boolean;
 };

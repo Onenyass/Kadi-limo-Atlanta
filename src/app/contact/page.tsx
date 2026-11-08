@@ -73,7 +73,7 @@ export default async function ContactPage() {
             </p>
           </Reveal>
 
-          <Reveal delay={150}>
+          <Reveal delay={150} id="request">
             <RideRequestForm
               mode={siteConfig.formMode}
               formName={NETLIFY_FORM_NAME}

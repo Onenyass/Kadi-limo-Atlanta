@@ -45,6 +45,7 @@ const docs: Record<string, unknown>[] = [
     kind: x.kind,
     description: x.description,
     confirmedDetails: x.confirmedDetails,
+    suitedTo: x.suitedTo.map((slug) => ({ _type: "reference", _ref: `service-${slug}`, _key: slug })),
     featured: x.featured,
     order: (i + 1) * 10,
   })),
