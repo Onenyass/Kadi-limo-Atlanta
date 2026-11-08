@@ -824,7 +824,7 @@ body[data-menu-open="true"] {
 }
 
 .frame--card {
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 3 / 2;
 }
 
 .frame img.frame__photo {
@@ -833,6 +833,13 @@ body[data-menu-open="true"] {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* Studio shots: keep the vehicle and its floor reflection, trim empty backdrop. */
+  object-position: 50% 40%;
+  transition: transform 0.8s var(--ease);
+}
+
+.vehicle-card:hover img.frame__photo {
+  transform: scale(1.03);
 }
 
 .frame__art {

@@ -66,7 +66,9 @@ export default async function HomePage() {
                     variant="hero"
                     category={heroVehicle.category}
                     name={heroVehicle.name}
+                    image={heroVehicle.image}
                     priority
+                    sizes="(min-width: 1000px) 48vw, 100vw"
                   />
                 )
               )}

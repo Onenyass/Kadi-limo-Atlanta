@@ -11,7 +11,8 @@ the owner provides it.
 - [ ] Logo, if one exists (the site currently uses a text wordmark)
 
 ## Fleet
-- [ ] Real photos of each vehicle (currently labelled illustrations)
+- [ ] Real photos of each vehicle (the site currently shows labelled representative images)
+- [ ] Confirm you have the right to use the current representative vehicle images on a public site
 - [ ] Confirm which planned vehicles are actually available: Escalade, Suburban, Yukon,
       Cadillac CT5 or XTS (which one?), stretch limousine, Rolls-Royce
 - [ ] Any facts to publish per vehicle (seating, luggage, amenities). Optional; only confirmed facts.

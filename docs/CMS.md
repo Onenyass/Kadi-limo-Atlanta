@@ -47,6 +47,18 @@ Invite other editors under **Members** in Sanity manage.
 
 ## Replacing vehicle images
 
+The fleet currently uses **representative images** stored in `public/images/fleet/`
+(`cadillac-escalade.webp`, `chevrolet-suburban.webp`, `gmc-yukon.webp`,
+`cadillac-sedan.webp`, `stretch-limousine.webp`, `rolls-royce.webp`). Each one is
+labelled "Representative image" on the site. To replace them, either:
+
+- **Without the CMS:** overwrite the file in `public/images/fleet/` (same name,
+  landscape, about 4:3), and update its alt text or `isRepresentative` flag in
+  `src/content/seed.ts` if needed. Set `isRepresentative: false` only for photos of
+  Kadi's own vehicles.
+- **With the CMS:** upload a photo to the vehicle in Sanity, as below. A CMS photo
+  takes the place of the built-in image.
+
 1. Open **Fleet** → a vehicle → **Photo** and upload the image.
 2. Write descriptive **alt text** (e.g. "Black Chevrolet Suburban outside a hotel entrance").
 3. **Representative image** switch:
@@ -54,7 +66,7 @@ Invite other editors under **Members** in Sanity manage.
    - **Off** only for photos of Kadi's own vehicles.
 4. Publish.
 
-Use landscape photos about 2000 px wide. The site crops cards to 16:10 and uses the
+Use landscape photos about 2000 px wide. The site crops cards to 3:2 and uses the
 hotspot you set in the Studio.
 
 ## Developer notes

@@ -6,7 +6,17 @@
  *   testimonials, certifications or "24/7" claims unless the owner confirms them.
  * - Contact fields stay null until the owner provides real values.
  */
-import type { Service, SiteSettings, Vehicle } from "./types";
+import type { ImageAsset, Service, SiteSettings, Vehicle } from "./types";
+
+/**
+ * Representative fleet images in public/images/fleet (1448×1086, WebP).
+ * They show the vehicle type and are not confirmed photos of Kadi's own vehicles,
+ * so isRepresentative stays true and the site labels them "Representative image".
+ * Replace with real fleet photos (via the CMS or this folder) when available.
+ */
+function fleetImage(slug: string, alt: string): ImageAsset {
+  return { url: `/images/fleet/${slug}.webp`, alt, width: 1448, height: 1086, isRepresentative: true };
+}
 
 export const seedSettings: SiteSettings = {
   businessName: "Kadi Limo & Transportation",
@@ -156,6 +166,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "A full-size SUV with a confident presence, well suited to airport transfers, executive travel and evenings out.",
     confirmedDetails: [],
+    image: fleetImage("cadillac-escalade", "Representative image of a black Cadillac Escalade SUV in a dark studio with warm rim lighting"),
     featured: true,
   },
   {
@@ -166,6 +177,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "A practical, spacious SUV that works well for airport runs, family trips and small groups traveling together.",
     confirmedDetails: [],
+    image: fleetImage("chevrolet-suburban", "Representative image of a black Chevrolet Suburban SUV in a dark studio with warm rim lighting"),
     featured: false,
   },
   {
@@ -176,6 +188,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "A comfortable full-size SUV for business travel, airport transfers and point-to-point rides around Atlanta.",
     confirmedDetails: [],
+    image: fleetImage("gmc-yukon", "Representative image of a black GMC Yukon SUV, front three-quarter view, in a dark studio"),
     featured: false,
   },
   {
@@ -186,6 +199,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "A refined sedan for one-on-one business travel, airport transfers and a quiet ride to dinner.",
     confirmedDetails: [],
+    image: fleetImage("cadillac-sedan", "Representative image of a black Cadillac sedan in a dark studio with warm rim lighting"),
     featured: true,
   },
   {
@@ -196,6 +210,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "A classic choice for weddings, proms, birthdays and celebrations where the ride is part of the occasion.",
     confirmedDetails: [],
+    image: fleetImage("stretch-limousine", "Representative image of a black stretch limousine in a dark studio with warm rim lighting"),
     featured: true,
   },
   {
@@ -206,6 +221,7 @@ export const seedFleet: Vehicle[] = [
     description:
       "Reserved for the moments that call for something special — wedding arrivals, anniversaries and milestone events.",
     confirmedDetails: [],
+    image: fleetImage("rolls-royce", "Representative image of a black Rolls-Royce sedan in a dark studio with warm rim lighting"),
     featured: true,
   },
 ];

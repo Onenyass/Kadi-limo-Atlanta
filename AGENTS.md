@@ -6,8 +6,9 @@
   model years, amenities, history, licenses, insurance, chauffeur credentials,
   testimonials, ratings, statistics, "24/7", flight tracking and guarantees must come
   from the owner. Leave fields empty (`null`) so the site shows placeholders.
-- Vehicle images: illustrations are labelled "Illustration"; stock photos must keep
-  `isRepresentative: true` so they show a "Representative image" label.
+- Vehicle images: representative photos live in `public/images/fleet/` and must keep
+  `isRepresentative: true` so they show a "Representative image" label. Illustrations
+  (fallback when no image exists) are labelled "Illustration".
 - Use "request availability" / "request a quote" wording. Never state a booking is confirmed.
 - The ride-request form must never claim a request was sent unless the endpoint returned
   success. Keep `public/__forms.html` field names in sync with `RideRequestForm.tsx`.
