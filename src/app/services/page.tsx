@@ -29,9 +29,9 @@ export default async function ServicesPage() {
         </p>
       </PageHead>
 
-      <section className="chapter ivory ivory--light" aria-label="All services" style={{ paddingTop: "clamp(56px, 8vw, 112px)" }}>
+      <section className="chapter tone-raised" aria-label="All services" style={{ paddingTop: "clamp(56px, 8vw, 112px)" }}>
         <div className="container">
-          <ServiceAccordion services={services} />
+          <ServiceAccordion services={services} vehicles={fleet} />
         </div>
       </section>
 

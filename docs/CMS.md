@@ -9,9 +9,9 @@ project to point at.
 
 | Studio section    | Controls |
 | ----------------- | -------- |
-| **Site settings** | Phone, email, service area, search description, home hero and intro, About page copy, contact intro, privacy policy |
+| **Site settings** | Phone, "accepts texts" switch, WhatsApp number, email, service area, search description, home hero and intro, About page copy, contact intro, privacy policy |
 | **Services**      | Title, summary, description, "good for" tags, availability note, image, home-page feature, sort order |
-| **Fleet**         | Name, type label, description, confirmed details (seating etc.), "suited to" services, photo, home-page feature, sort order |
+| **Fleet**         | Name, type label, description, confirmed details (seating etc.), scene line, "suited to" services, photo, home-page feature, sort order |
 
 Empty CMS fields fall back to the seed text. Phone, email and service area show
 "coming soon" placeholders until they're filled in.

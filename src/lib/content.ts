@@ -57,6 +57,8 @@ const strList = (v: unknown, fallback: string[]) =>
 type SanitySettings = {
   businessName?: string;
   phone?: string;
+  textEnabled?: boolean;
+  whatsapp?: string;
   email?: string;
   serviceArea?: string;
   seoDescription?: string;
@@ -87,6 +89,8 @@ export const getSettings = cache(async (): Promise<SiteSettings> => {
     ...d,
     businessName: str(s.businessName, d.businessName),
     phone: strOrNull(s.phone),
+    textEnabled: Boolean(s.textEnabled) && Boolean(strOrNull(s.phone)),
+    whatsapp: strOrNull(s.whatsapp),
     email: strOrNull(s.email),
     serviceArea: strOrNull(s.serviceArea),
     seoDescription: str(s.seoDescription, d.seoDescription),
@@ -155,6 +159,7 @@ type SanityVehicle = {
   description?: string;
   confirmedDetails?: string[];
   suitedTo?: string[];
+  useLine?: string;
   image?: SanityImage;
   featured?: boolean;
 };
@@ -165,7 +170,7 @@ export const getFleet = cache(async (): Promise<Vehicle[]> => {
   const rows = await fetchSanity<SanityVehicle[]>(
     `*[_type == "vehicle" && defined(slug.current)] | order(coalesce(order, 999) asc, name asc){
       "slug": slug.current, name, category, kind, description, confirmedDetails, featured,
-      "suitedTo": suitedTo[]->slug.current, image${imageProjection}
+      "suitedTo": suitedTo[]->slug.current, useLine, image${imageProjection}
     }`,
   );
   if (!rows || rows.length === 0) return seedFleet;
@@ -179,6 +184,7 @@ export const getFleet = cache(async (): Promise<Vehicle[]> => {
       description: str(r.description, ""),
       confirmedDetails: strList(r.confirmedDetails, []),
       suitedTo: strList(r.suitedTo, []),
+      useLine: strOrNull(r.useLine) ?? undefined,
       image: mapImage(r.image, `${r.name} — black chauffeured vehicle`),
       featured: Boolean(r.featured),
     }));

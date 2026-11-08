@@ -27,20 +27,28 @@ transportation business in Atlanta, Georgia.
 
 ## Design: "Night Route"
 
-Cinematic, editorial art direction: deep black-green, warm ivory and restrained brass,
-with Instrument Serif display type over Manrope.
+Cinematic, editorial art direction, dark throughout: deep black-green surfaces in three
+subtle tones (deep, base, raised), ivory type and restrained brass, with Instrument Serif
+display type over Manrope. Contrast is checked with axe-core on every page at desktop and
+phone widths.
 
 - **Signature:** a hairline brass route with numbered stops. Each page starts at stop 00,
   and its chapters count up from there. On wide screens, a fixed route rail fills as you scroll.
 - **Opening scene:** a full-bleed vehicle that "lights up" while the headline rises line by line.
-- **Fleet:** the home page stage is an accessible tab list (click, arrow keys, Home/End, or
-  swipe on phones). The Fleet page uses editorial plates with parallax imagery.
+- **Fleet:** the Fleet page is a showroom. A sticky thumbnail selector sits above the selected
+  vehicle's large image and details. All images load eagerly and stay mounted, so the frame is
+  never blank. It syncs with the URL (`/fleet#rolls-royce`) and works with click, arrow keys or
+  swipe. "Matched to the occasion" pairs services with suited vehicles. The home page uses a
+  similar tabbed stage.
 - **Services:** an expandable index; `/services#slug` opens that service.
 - **Request:** a three-step flow (Occasion → Journey → Details) with a review before
   sending. It uses the same Netlify field names as before.
 - **Motion:** page entrance, masked headings, curtain image reveals and parallax. It is
   short and eased, and fully disabled under `prefers-reduced-motion`.
 - **Imagery:** all vehicle images are representative and carry a visible label.
+- **Navigation:** the header stays pinned while scrolling, and a back-to-top button appears
+  after scrolling. On phones, an action bar keeps "Request a quote" in reach. Call, Text and
+  WhatsApp buttons appear only once those details are entered in the CMS (see below).
 
 ## Quick start
 

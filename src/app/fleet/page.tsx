@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
-import { FleetIndex } from "@/components/FleetIndex";
-import { VehicleCaption, VehicleFrame, type FeatureLayout } from "@/components/FleetFeature";
+import { FleetShowroom } from "@/components/FleetShowroom";
+import { Lines } from "@/components/Lines";
+import { OccasionMatch } from "@/components/OccasionMatch";
 import { PageHead } from "@/components/PageHead";
+import { Reveal } from "@/components/Reveal";
 import { Scene } from "@/components/Scene";
-import type { Vehicle } from "@/content/types";
+import { Stop } from "@/components/Stop";
 import { getFleet, getServices } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
@@ -14,125 +16,46 @@ export const metadata: Metadata = pageMetadata({
   path: "/fleet",
 });
 
-type Group = { type: "full" | "pair" | "print" | "pano" | "finale"; items: { v: Vehicle; i: number }[] };
-
-/**
- * Editorial sequence: each vehicle gets a different composition so the page
- * reads like a printed portfolio, not a list. Extra CMS vehicles fall back to
- * alternating "print" layouts.
- */
-function compose(fleet: Vehicle[]): Group[] {
-  const items = fleet.map((v, i) => ({ v, i }));
-  const groups: Group[] = [];
-  const plan: Group["type"][] = ["full", "pair", "print", "pano", "finale"];
-  let cursor = 0;
-  for (const type of plan) {
-    if (cursor >= items.length) break;
-    if (type === "pair") {
-      if (cursor + 1 < items.length) {
-        groups.push({ type, items: items.slice(cursor, cursor + 2) });
-        cursor += 2;
-      }
-      continue;
-    }
-    groups.push({ type, items: [items[cursor]] });
-    cursor += 1;
-  }
-  while (cursor < items.length) groups.push({ type: "print", items: [items[cursor++]] });
-  return groups;
-}
-
 export default async function FleetPage() {
   const [fleet, services] = await Promise.all([getFleet(), getServices()]);
-  const total = fleet.length;
-  const usingRepresentative = fleet.some((v) => v.image?.isRepresentative);
-  const usingIllustrations = fleet.some((v) => !v.image);
-  const closing = fleet.find((v) => v.category === "suv" && v.image && v.slug !== fleet[0]?.slug) ?? fleet[0];
-  const groups = compose(fleet);
-
-  const caption = (v: Vehicle, i: number, layout: FeatureLayout) => (
-    <VehicleCaption vehicle={v} index={i} total={total} services={services} layout={layout} />
-  );
+  const closing = fleet.find((v) => v.category === "limousine" && v.image) ?? fleet.find((v) => v.image);
 
   return (
     <>
       <PageHead num="00" label="The fleet" lines={["Black vehicles,", <em key="e">every kind of trip.</em>]}>
         <p className="lede">
-          SUVs and sedans for everyday travel, a stretch limousine and a Rolls-Royce for the
-          occasions that call for them. Choose one, or tell us your plans and we’ll recommend one.
-        </p>
-        <p className="note note--night">
-          <strong>Availability varies by date.</strong> We confirm which vehicles are available,
-          and the details of each, when we reply to your request.
-          {usingRepresentative &&
-            " Images marked “Representative image” show the vehicle type, not Kadi’s own vehicle."}
-          {usingIllustrations && " Illustrations are shown where no image is available yet."}
+          Choose a vehicle to see it up close, or tell us your plans and we’ll recommend one.
+          Availability varies by date and is confirmed with every quote.
         </p>
       </PageHead>
 
-      <FleetIndex vehicles={fleet} />
+      <section aria-label="Fleet showroom" className="tone-deep">
+        <FleetShowroom vehicles={fleet} services={services} />
+      </section>
 
-      <div className="fleet-seq">
-        {groups.map((g) => {
-          const key = g.items.map((x) => x.v.slug).join("-");
-          if (g.type === "full") {
-            const { v, i } = g.items[0];
-            return (
-              <section key={key} id={v.slug} className="fseq fseq--full night-deep" aria-label={v.name}>
-                <VehicleFrame vehicle={v} layout="full" sizes="100vw" priority={i === 0} />
-                <div className="container">{caption(v, i, "full")}</div>
-              </section>
-            );
-          }
-          if (g.type === "pair") {
-            return (
-              <section key={key} className="fseq fseq--pair night-deep" aria-label="Full-size SUVs">
-                <div className="container fpair">
-                  {g.items.map(({ v, i }, n) => {
-                    const layout: FeatureLayout = n === 0 ? "pair-lead" : "pair-follow";
-                    return (
-                      <article key={v.slug} id={v.slug} className={`fpair__item fpair__item--${n === 0 ? "lead" : "follow"}`}>
-                        <VehicleFrame vehicle={v} layout={layout} sizes="(min-width: 960px) 55vw, 100vw" />
-                        {caption(v, i, layout)}
-                      </article>
-                    );
-                  })}
-                </div>
-              </section>
-            );
-          }
-          if (g.type === "print") {
-            const { v, i } = g.items[0];
-            const flip = i % 2 === 1;
-            return (
-              <section key={key} id={v.slug} className={`fseq fseq--print ivory${flip ? " fseq--flip" : ""}`} aria-label={v.name}>
-                <div className="container fprint">
-                  <VehicleFrame vehicle={v} layout="print" sizes="(min-width: 960px) 62vw, 100vw" />
-                  {caption(v, i, "print")}
-                </div>
-              </section>
-            );
-          }
-          if (g.type === "pano") {
-            const { v, i } = g.items[0];
-            return (
-              <section key={key} id={v.slug} className="fseq fseq--pano night-deep" aria-label={v.name}>
-                <VehicleFrame vehicle={v} layout="pano" sizes="100vw" />
-                <div className="container">{caption(v, i, "pano")}</div>
-              </section>
-            );
-          }
-          const { v, i } = g.items[0];
-          return (
-            <section key={key} id={v.slug} className="fseq fseq--finale ivory ivory--light" aria-label={v.name}>
-              <div className="container ffinale">
-                <VehicleFrame vehicle={v} layout="finale" sizes="(min-width: 960px) 80vw, 100vw" />
-                {caption(v, i, "finale")}
-              </div>
-            </section>
-          );
-        })}
-      </div>
+      <section className="chapter tone-raised" aria-labelledby="match-title">
+        <div className="container">
+          <div className="chapter-head chapter-head--split">
+            <div style={{ display: "grid", gap: 28 }}>
+              <Reveal>
+                <Stop num="01" label="By occasion" />
+              </Reveal>
+              <Reveal variant="lines">
+                <h2 id="match-title" className="display-lg">
+                  <Lines lines={["Matched to", <em key="e">the occasion.</em>]} />
+                </h2>
+              </Reveal>
+            </div>
+            <Reveal delay={120}>
+              <p className="lede">
+                Pairings drawn from each vehicle’s description. Select a vehicle to view it above,
+                or open a service for details.
+              </p>
+            </Reveal>
+          </div>
+          <OccasionMatch services={services} vehicles={fleet} />
+        </div>
+      </section>
 
       <Scene
         vehicle={closing}

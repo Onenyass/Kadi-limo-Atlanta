@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { Service, SiteSettings } from "@/content/types";
-import { mainNav, telHref } from "@/lib/nav";
+import { contactActions, mainNav } from "@/lib/nav";
 import { BrandMark } from "./Icons";
 
 export function SiteFooter({ settings, services }: { settings: SiteSettings; services: Service[] }) {
@@ -20,11 +20,20 @@ export function SiteFooter({ settings, services }: { settings: SiteSettings; ser
             <p className="muted">
               Private chauffeured transportation in {settings.city}, {settings.region}.
             </p>
-            {(settings.phone || settings.email) && (
+            {(settings.phone || settings.email || settings.whatsapp) && (
               <ul className="muted" style={{ display: "grid", gap: 6 }}>
-                {settings.phone && (
-                  <li>
-                    <a href={telHref(settings.phone)}>{settings.phone}</a>
+                {settings.phone && <li>{settings.phone}</li>}
+                {contactActions(settings).length > 0 && (
+                  <li className="footer-actions">
+                    {contactActions(settings).map((a) => (
+                      <a
+                        key={a.key}
+                        href={a.href}
+                        {...(a.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                      >
+                        {a.label}
+                      </a>
+                    ))}
                   </li>
                 )}
                 {settings.email && (

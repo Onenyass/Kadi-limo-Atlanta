@@ -4,7 +4,7 @@ import { Reveal } from "@/components/Reveal";
 import { RideRequestForm } from "@/components/RideRequestForm";
 import { NETLIFY_FORM_NAME, siteConfig } from "@/lib/config";
 import { getFleet, getServices, getSettings } from "@/lib/content";
-import { telHref } from "@/lib/nav";
+import { smsHref, telHref, whatsappHref } from "@/lib/nav";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -23,7 +23,7 @@ export default async function ContactPage() {
         <p className="lede">{settings.contactIntro}</p>
       </PageHead>
 
-      <section className="chapter ivory" aria-label="Ride request" style={{ paddingTop: "clamp(56px, 8vw, 112px)" }}>
+      <section className="chapter tone-raised" aria-label="Ride request" style={{ paddingTop: "clamp(56px, 8vw, 112px)" }}>
         <div className="container contact-grid">
           <Reveal as="aside" className="contact-aside contact-aside--after" aria-labelledby="contact-details-title">
             <div style={{ display: "grid", gap: 16 }}>
@@ -39,11 +39,22 @@ export default async function ContactPage() {
               <li>
                 <span className="label">Phone</span>
                 {settings.phone ? (
-                  <a href={telHref(settings.phone)}>{settings.phone}</a>
+                  <span className="details__actions">
+                    <a href={telHref(settings.phone)}>Call {settings.phone}</a>
+                    {settings.textEnabled && <a href={smsHref(settings.phone)}>Text</a>}
+                  </span>
                 ) : (
                   <span className="placeholder-value">Phone number coming soon</span>
                 )}
               </li>
+              {settings.whatsapp && (
+                <li>
+                  <span className="label">WhatsApp</span>
+                  <a href={whatsappHref(settings.whatsapp)} target="_blank" rel="noopener noreferrer">
+                    Message on WhatsApp
+                  </a>
+                </li>
+              )}
               <li>
                 <span className="label">Email</span>
                 {settings.email ? (

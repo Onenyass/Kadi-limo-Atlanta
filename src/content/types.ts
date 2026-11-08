@@ -31,6 +31,8 @@ export type Vehicle = {
    * Descriptive only: not a statement of availability.
    */
   suitedTo: string[];
+  /** Short scene line drawn from the description, e.g. "Weddings and formal events". */
+  useLine?: string;
   image?: ImageAsset;
   featured: boolean;
 };
@@ -57,6 +59,10 @@ export type SiteSettings = {
   region: string;
   /** Null until the owner provides it. Placeholders are shown instead. */
   phone: string | null;
+  /** Show a "Text" action only when the owner confirms the number accepts texts. */
+  textEnabled: boolean;
+  /** WhatsApp number, only if Kadi uses WhatsApp for customer inquiries. */
+  whatsapp: string | null;
   email: string | null;
   serviceArea: string | null;
   seoDescription: string;

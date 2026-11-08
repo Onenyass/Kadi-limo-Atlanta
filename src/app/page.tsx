@@ -34,7 +34,7 @@ export default async function HomePage() {
       />
 
       {/* 01 — Arrival */}
-      <section id="arrival" className="chapter ivory" aria-labelledby="arrival-title">
+      <section id="arrival" className="chapter tone-raised" aria-labelledby="arrival-title">
         <div className="container arrival">
           <div className="arrival__top">
           <div className="chapter-head" style={{ marginBottom: 0 }}>
@@ -100,7 +100,7 @@ export default async function HomePage() {
       </section>
 
       {/* 03 — Occasions */}
-      <section className="chapter ivory ivory--light" aria-labelledby="occasions-title">
+      <section className="chapter tone-raised" aria-labelledby="occasions-title">
         <div className="container">
           <div className="chapter-head chapter-head--split">
             <div style={{ display: "grid", gap: 28 }}>

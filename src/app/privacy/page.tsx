@@ -15,7 +15,7 @@ export default async function PrivacyPage() {
   return (
     <>
       <PageHead num="00" label="Privacy" lines={["Privacy policy"]} />
-      <section className="chapter ivory" style={{ paddingTop: "clamp(56px, 8vw, 112px)" }}>
+      <section className="chapter tone-raised" style={{ paddingTop: "clamp(56px, 8vw, 112px)" }}>
         <div className="container">
           {settings.privacyPolicy ? (
             <div className="legal prose">

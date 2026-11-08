@@ -3,22 +3,22 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { mainNav, telHref } from "@/lib/nav";
+import { contactActions, mainNav, type ContactInfo } from "@/lib/nav";
 import { ArrowRight, BrandMark } from "./Icons";
 
 export function SiteHeader({
-  phone,
+  contact,
   email,
   city,
 }: {
-  phone: string | null;
+  contact: ContactInfo;
   email: string | null;
   city: string;
 }) {
+  const actions = contactActions(contact);
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [solid, setSolid] = useState(false);
-  const [hidden, setHidden] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -32,22 +32,14 @@ export function SiteHeader({
   if (pathname !== lastPath) {
     setLastPath(pathname);
     setOpen(false);
-    setHidden(false);
   }
 
-  // Transparent over the opening scene; solid once scrolled.
-  // Tucks away while scrolling down, returns on any scroll up.
+  // Always visible (sticky). Transparent over the opening scene, solid once scrolled.
   useEffect(() => {
-    let lastY = window.scrollY;
     let raf = 0;
     const update = () => {
       raf = 0;
-      const y = window.scrollY;
-      setSolid(y > 24);
-      if (Math.abs(y - lastY) > 6) {
-        setHidden(y > lastY && y > 480);
-        lastY = y;
-      }
+      setSolid(window.scrollY > 24);
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -106,8 +98,6 @@ export function SiteHeader({
       <header
         className="site-header"
         data-solid={solid || open}
-        data-hidden={hidden && !open}
-        onFocusCapture={() => setHidden(false)}
       >
         <div className="container site-header__inner">
           <Link href="/" className="brand" aria-label="Kadi Limo & Transportation, home">
@@ -177,10 +167,19 @@ export function SiteHeader({
           <Link className="btn btn--brass" href="/contact">
             Request a quote <ArrowRight />
           </Link>
-          {phone && (
-            <a className="btn btn--line" href={telHref(phone)}>
-              Call {phone}
-            </a>
+          {actions.length > 0 && (
+            <div className="contact-actions">
+              {actions.map((a) => (
+                <a
+                  key={a.key}
+                  className="btn btn--line"
+                  href={a.href}
+                  {...(a.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                >
+                  {a.label}
+                </a>
+              ))}
+            </div>
           )}
           <p className="mobile-menu__meta">
             <span>{city}, GA</span>

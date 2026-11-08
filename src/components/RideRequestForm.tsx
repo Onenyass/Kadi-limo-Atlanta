@@ -377,7 +377,7 @@ export function RideRequestForm({
   // ----- Finished states replace the form.
   if (status === "sent") {
     return (
-      <div className="request ivory">
+      <div className="request">
         <div className="form-status" ref={statusRef} tabIndex={-1} role="status">
           <svg className="form-status__mark" viewBox="0 0 56 56" aria-hidden="true">
             <circle cx="28" cy="28" r="27" />
@@ -399,7 +399,7 @@ export function RideRequestForm({
   const vehicleOptions = [{ value: "", label: "No preference" }, ...vehicles];
 
   return (
-    <div className="request ivory">
+    <div className="request">
       <div className="request__head">
         {mode === "preview" && <span className="request__badge">Preview · requests are not sent yet</span>}
         <nav aria-label="Request steps">

@@ -42,7 +42,7 @@ export default async function AboutPage() {
         </Reveal>
       )}
 
-      <section className="chapter ivory" aria-labelledby="approach-title">
+      <section className="chapter tone-raised" aria-labelledby="approach-title">
         <div className="container arrival">
           <div className="arrival__top">
           <div className="chapter-head" style={{ marginBottom: 0 }}>
@@ -97,7 +97,7 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      <section className="chapter ivory ivory--light" aria-labelledby="process-title">
+      <section className="chapter tone-raised" aria-labelledby="process-title">
         <div className="container">
           <div className="chapter-head">
             <Reveal>

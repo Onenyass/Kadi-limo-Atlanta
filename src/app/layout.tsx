@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, Manrope } from "next/font/google";
 import { JsonLd } from "@/components/JsonLd";
 import { MobileCtaBar } from "@/components/MobileCtaBar";
+import { BackToTop } from "@/components/BackToTop";
 import { RouteRail } from "@/components/RouteRail";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -51,6 +52,7 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const [settings, services] = await Promise.all([getSettings(), getServices()]);
+  const contact = { phone: settings.phone, textEnabled: settings.textEnabled, whatsapp: settings.whatsapp };
   return (
     <html lang="en-US" className={`${serif.variable} ${sans.variable} no-js`} suppressHydrationWarning>
       <body>
@@ -63,13 +65,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <a className="skip-link" href="#main">
           Skip to content
         </a>
-        <SiteHeader phone={settings.phone} email={settings.email} city={settings.city} />
+        <SiteHeader contact={contact} email={settings.email} city={settings.city} />
         <RouteRail />
         <main id="main" tabIndex={-1}>
           {children}
         </main>
         <SiteFooter settings={settings} services={services} />
-        <MobileCtaBar phone={settings.phone} />
+        <MobileCtaBar contact={contact} />
+        <BackToTop />
         <JsonLd data={localBusinessJsonLd(settings)} />
       </body>
     </html>

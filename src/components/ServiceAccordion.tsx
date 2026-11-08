@@ -1,14 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import type { Service } from "@/content/types";
+import type { Service, Vehicle } from "@/content/types";
 
 /**
  * Services as an expandable index. Several can be open at once.
  * Links to /services#slug open and scroll to that service.
  */
-export function ServiceAccordion({ services }: { services: Service[] }) {
+export function ServiceAccordion({ services, vehicles = [] }: { services: Service[]; vehicles?: Vehicle[] }) {
   const [open, setOpen] = useState<Set<string>>(() => new Set(services[0] ? [services[0].slug] : []));
 
   useEffect(() => {
@@ -77,6 +78,25 @@ export function ServiceAccordion({ services }: { services: Service[] }) {
                       </ul>
                     )}
                     {s.note && <p className="acc-note">{s.note}</p>}
+                    {vehicles.some((v) => v.suitedTo.includes(s.slug)) && (
+                      <div className="acc-vehicles">
+                        <p className="acc-vehicles__label">Suggested vehicles</p>
+                        <ul>
+                          {vehicles
+                            .filter((v) => v.suitedTo.includes(s.slug))
+                            .map((v) => (
+                              <li key={v.slug}>
+                                <Link href={`/fleet#${v.slug}`} className="match__vehicle">
+                                  <span className="match__thumb" aria-hidden="true">
+                                    {v.image && <Image src={v.image.url} alt="" fill sizes="96px" />}
+                                  </span>
+                                  <span>{v.name}</span>
+                                </Link>
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    )}
                     <Link
                       className="link-arrow"
                       href={`/contact?service=${encodeURIComponent(s.slug)}`}

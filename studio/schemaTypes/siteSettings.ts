@@ -20,6 +20,21 @@ export const siteSettings = defineType({
       description: "Shown in the header menu, contact page, footer and search-engine data. Leave empty until confirmed.",
     }),
     defineField({
+      name: "textEnabled",
+      title: "Phone number accepts text messages",
+      type: "boolean",
+      group: "business",
+      initialValue: false,
+      description: "Turn on only if customers can text the phone number above. Shows a “Text” button.",
+    }),
+    defineField({
+      name: "whatsapp",
+      title: "WhatsApp number",
+      type: "string",
+      group: "business",
+      description: "Only if Kadi uses WhatsApp for customer inquiries. Include the country code, e.g. +1 404 555 0100.",
+    }),
+    defineField({
       name: "email",
       title: "Email address",
       type: "string",

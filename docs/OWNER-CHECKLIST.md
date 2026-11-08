@@ -4,7 +4,10 @@ Nothing below was invented. Each item shows as a placeholder (or is left out) un
 the owner provides it.
 
 ## Business details
-- [ ] Phone number (header menu, mobile call button, contact page, footer, search data)
+- [ ] Phone number (adds Call buttons in the header menu, phone action bar, contact page, footer and search data)
+- [ ] Can customers text that number? If yes, turn on "Phone number accepts text messages" to add Text buttons
+- [ ] Does Kadi use WhatsApp for customer inquiries? If yes, provide the WhatsApp number
+- [ ] Does Kadi offer funeral transportation? It is not shown on the site unless confirmed
 - [ ] Email address (contact page, footer, "open in email" on the request summary)
 - [ ] Exact service area (contact page and search data)
 - [ ] Confirm the wording "based in Atlanta, Georgia"

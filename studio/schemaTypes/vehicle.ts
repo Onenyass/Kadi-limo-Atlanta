@@ -35,6 +35,12 @@ export const vehicle = defineType({
         "Only facts you have confirmed for this vehicle, e.g. “Seats up to 6”. Leave empty if unsure — nothing is shown when empty.",
     }),
     defineField({
+      name: "useLine",
+      title: "Scene line",
+      type: "string",
+      description: "Short line shown above the vehicle, e.g. “Weddings and formal events”. Keep it to uses in the description.",
+    }),
+    defineField({
       name: "suitedTo",
       title: "Suited to (services)",
       type: "array",
