@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Service, SiteSettings } from "@/content/types";
 import { mainNav, telHref } from "@/lib/nav";
+import { BrandMark } from "./Icons";
 
 export function SiteFooter({ settings, services }: { settings: SiteSettings; services: Service[] }) {
   const year = new Date().getFullYear();
@@ -10,25 +11,29 @@ export function SiteFooter({ settings, services }: { settings: SiteSettings; ser
         <div className="footer-grid">
           <div className="footer-brand">
             <Link href="/" className="brand" aria-label="Kadi Limo & Transportation, home">
-              <span className="brand__name">Kadi</span>
-              <span className="brand__tag">Limo &amp; Transportation</span>
+              <BrandMark className="brand__mark" />
+              <span className="brand__word">
+                <span className="brand__name">Kadi</span>
+                <span className="brand__tag">Limo &amp; Transportation</span>
+              </span>
             </Link>
-            <p>
-              Private chauffeured transportation in {settings.city}, {settings.region}. Request
-              availability and a quote for your next trip.
+            <p className="muted">
+              Private chauffeured transportation in {settings.city}, {settings.region}.
             </p>
-            <ul style={{ listStyle: "none", display: "grid", gap: 6 }} className="muted">
-              {settings.phone && (
-                <li>
-                  <a href={telHref(settings.phone)}>{settings.phone}</a>
-                </li>
-              )}
-              {settings.email && (
-                <li>
-                  <a href={`mailto:${settings.email}`}>{settings.email}</a>
-                </li>
-              )}
-            </ul>
+            {(settings.phone || settings.email) && (
+              <ul className="muted" style={{ display: "grid", gap: 6 }}>
+                {settings.phone && (
+                  <li>
+                    <a href={telHref(settings.phone)}>{settings.phone}</a>
+                  </li>
+                )}
+                {settings.email && (
+                  <li>
+                    <a href={`mailto:${settings.email}`}>{settings.email}</a>
+                  </li>
+                )}
+              </ul>
+            )}
           </div>
           <div className="footer-col">
             <h2>Explore</h2>
@@ -59,6 +64,7 @@ export function SiteFooter({ settings, services }: { settings: SiteSettings; ser
             © {year} {settings.businessName}
           </p>
           <p>
+            <span aria-hidden="true">33.749° N · 84.388° W · </span>
             <Link href="/privacy">Privacy</Link>
           </p>
         </div>

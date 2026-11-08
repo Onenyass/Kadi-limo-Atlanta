@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, Manrope } from "next/font/google";
 import { JsonLd } from "@/components/JsonLd";
 import { MobileCtaBar } from "@/components/MobileCtaBar";
+import { RouteRail } from "@/components/RouteRail";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { siteConfig } from "@/lib/config";
@@ -62,7 +63,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <a className="skip-link" href="#main">
           Skip to content
         </a>
-        <SiteHeader phone={settings.phone} email={settings.email} />
+        <SiteHeader phone={settings.phone} email={settings.email} city={settings.city} />
+        <RouteRail />
         <main id="main" tabIndex={-1}>
           {children}
         </main>

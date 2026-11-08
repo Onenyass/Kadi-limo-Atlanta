@@ -4,12 +4,21 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { mainNav, telHref } from "@/lib/nav";
-import { ArrowRight } from "./Icons";
+import { ArrowRight, BrandMark } from "./Icons";
 
-export function SiteHeader({ phone, email }: { phone: string | null; email: string | null }) {
+export function SiteHeader({
+  phone,
+  email,
+  city,
+}: {
+  phone: string | null;
+  email: string | null;
+  city: string;
+}) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [solid, setSolid] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -18,27 +27,45 @@ export function SiteHeader({ phone, email }: { phone: string | null; email: stri
     if (restoreFocus) toggleRef.current?.focus();
   }, []);
 
-  // Close the menu whenever the route changes (including back/forward).
+  // Close the menu when the route changes (including back/forward).
   const [lastPath, setLastPath] = useState(pathname);
   if (pathname !== lastPath) {
     setLastPath(pathname);
     setOpen(false);
+    setHidden(false);
   }
 
+  // Transparent over the opening scene; solid once scrolled.
+  // Tucks away while scrolling down, returns on any scroll up.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
+    let lastY = window.scrollY;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const y = window.scrollY;
+      setSolid(y > 24);
+      if (Math.abs(y - lastY) > 6) {
+        setHidden(y > lastY && y > 480);
+        lastY = y;
+      }
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
-  // Scroll lock, Escape to close, and a simple focus trap while open.
+  // Scroll lock, Escape to close, and a focus trap while the menu is open.
   useEffect(() => {
     document.body.dataset.menuOpen = String(open);
     if (!open) return;
     const menu = menuRef.current;
-    menu?.querySelector<HTMLElement>("a")?.focus();
-
+    const t = setTimeout(() => menu?.querySelector<HTMLElement>("a")?.focus(), 120);
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -46,10 +73,9 @@ export function SiteHeader({ phone, email }: { phone: string | null; email: stri
         return;
       }
       if (e.key !== "Tab" || !menu) return;
-      const focusables = [
-        toggleRef.current,
-        ...Array.from(menu.querySelectorAll<HTMLElement>("a, button")),
-      ].filter(Boolean) as HTMLElement[];
+      const focusables = [toggleRef.current, ...Array.from(menu.querySelectorAll<HTMLElement>("a, button"))].filter(
+        Boolean,
+      ) as HTMLElement[];
       const first = focusables[0];
       const last = focusables[focusables.length - 1];
       if (e.shiftKey && document.activeElement === first) {
@@ -62,38 +88,51 @@ export function SiteHeader({ phone, email }: { phone: string | null; email: stri
     };
     document.addEventListener("keydown", onKey);
     return () => {
+      clearTimeout(t);
       document.removeEventListener("keydown", onKey);
       document.body.dataset.menuOpen = "false";
     };
   }, [open, close]);
 
-  // Links to the current page don't change the route, so close explicitly.
   const onMenuClick = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest("a")) setOpen(false);
   };
 
   const isCurrent = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const items = [{ href: "/", label: "Home" }, ...mainNav];
 
   return (
     <>
-      <header className="site-header" data-scrolled={scrolled || open}>
+      <header
+        className="site-header"
+        data-solid={solid || open}
+        data-hidden={hidden && !open}
+        onFocusCapture={() => setHidden(false)}
+      >
         <div className="container site-header__inner">
           <Link href="/" className="brand" aria-label="Kadi Limo & Transportation, home">
-            <span className="brand__name">Kadi</span>
-            <span className="brand__tag">Limo &amp; Transportation</span>
+            <BrandMark className="brand__mark" />
+            <span className="brand__word">
+              <span className="brand__name">Kadi</span>
+              <span className="brand__tag">Limo &amp; Transportation</span>
+            </span>
           </Link>
 
           <nav className="nav-desktop" aria-label="Main">
             <ul>
               {mainNav.map((item) => (
                 <li key={item.href}>
-                  <Link href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                  <Link
+                    className="nav-link"
+                    href={item.href}
+                    aria-current={isCurrent(item.href) ? "page" : undefined}
+                  >
                     {item.label}
                   </Link>
                 </li>
               ))}
             </ul>
-            <Link className="btn btn--primary" href="/contact">
+            <Link className="btn btn--brass" href="/contact">
               Request a quote
             </Link>
           </nav>
@@ -115,24 +154,19 @@ export function SiteHeader({ phone, email }: { phone: string | null; email: stri
         </div>
       </header>
 
-      <div
-        id="mobile-menu"
-        ref={menuRef}
-        className="mobile-menu"
-        data-open={open}
-        aria-hidden={!open}
-        inert={!open}
-      >
+      <div id="mobile-menu" ref={menuRef} className="mobile-menu" data-open={open} inert={!open}>
         <nav className="mobile-menu__nav" aria-label="Mobile" onClick={onMenuClick}>
           <ol>
-            <li>
-              <Link href="/" aria-current={pathname === "/" ? "page" : undefined}>
-                Home
-              </Link>
-            </li>
-            {mainNav.map((item) => (
+            {items.map((item, i) => (
               <li key={item.href}>
-                <Link href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+                <Link
+                  href={item.href}
+                  style={{ "--i": i } as React.CSSProperties}
+                  aria-current={(item.href === "/" ? pathname === "/" : isCurrent(item.href)) ? "page" : undefined}
+                >
+                  <span className="num" aria-hidden="true">
+                    0{i + 1}
+                  </span>
                   {item.label}
                 </Link>
               </li>
@@ -140,22 +174,17 @@ export function SiteHeader({ phone, email }: { phone: string | null; email: stri
           </ol>
         </nav>
         <div className="mobile-menu__foot" onClick={onMenuClick}>
-          <Link className="btn btn--primary" href="/contact">
+          <Link className="btn btn--brass" href="/contact">
             Request a quote <ArrowRight />
           </Link>
           {phone && (
-            <a className="btn btn--ghost" href={telHref(phone)}>
+            <a className="btn btn--line" href={telHref(phone)}>
               Call {phone}
             </a>
           )}
           <p className="mobile-menu__meta">
-            Private transportation in Atlanta, Georgia.
-            {email && (
-              <>
-                {" "}
-                <a href={`mailto:${email}`}>{email}</a>
-              </>
-            )}
+            <span>{city}, GA</span>
+            {email ? <a href={`mailto:${email}`}>{email}</a> : <span>Private transportation</span>}
           </p>
         </div>
       </div>

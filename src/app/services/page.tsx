@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { CtaBand } from "@/components/CtaBand";
-import { ArrowRight } from "@/components/Icons";
-import { PageHero } from "@/components/PageHero";
-import { getServices } from "@/lib/content";
+import { Journey } from "@/components/Journey";
+import { Lines } from "@/components/Lines";
+import { PageHead } from "@/components/PageHead";
+import { Reveal } from "@/components/Reveal";
+import { Scene } from "@/components/Scene";
+import { ServiceAccordion } from "@/components/ServiceAccordion";
+import { Stop } from "@/components/Stop";
+import { getFleet, getServices } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -14,72 +17,45 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default async function ServicesPage() {
-  const services = await getServices();
+  const [services, fleet] = await Promise.all([getServices(), getFleet()]);
+  const closing = fleet.find((v) => v.category === "sedan" && v.image) ?? fleet.find((v) => v.image);
 
   return (
     <>
-      <PageHero
-        eyebrow="Services"
-        title={
-          <>
-            Private transportation, <em>planned</em> around your day
-          </>
-        }
-        intro="Each trip is planned around your schedule. Choose a service below to request availability and a quote."
-      />
+      <PageHead num="00" label="Services" lines={["Private transportation,", <em key="e">planned around you.</em>]}>
+        <p className="lede">
+          Each trip is planned around your schedule. Open a service for details, then request
+          availability and a quote.
+        </p>
+      </PageHead>
 
-      <nav className="jump-nav light" aria-label="Services on this page">
+      <section className="chapter ivory ivory--light" aria-label="All services" style={{ paddingTop: "clamp(56px, 8vw, 112px)" }}>
         <div className="container">
-          <ul>
-            {services.map((s) => (
-              <li key={s.slug}>
-                <a href={`#${s.slug}`}>{s.title}</a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </nav>
-
-      <section className="section light" aria-label="All services" style={{ paddingTop: 48 }}>
-        <div className="container">
-          <ul className="service-list">
-            {services.map((s, i) => (
-              <li key={s.slug} id={s.slug} className="service-row">
-                <span className="service-row__num" aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div>
-                  <h2>{s.title}</h2>
-                  <p className="service-row__summary">{s.summary}</p>
-                </div>
-                <div className="service-row__body">
-                  <p>{s.description}</p>
-                  {s.goodFor.length > 0 && (
-                    <ul className="tag-list" aria-label={`Common uses for ${s.title}`}>
-                      {s.goodFor.map((g) => (
-                        <li key={g}>{g}</li>
-                      ))}
-                    </ul>
-                  )}
-                  {s.note && <p className="service-row__note">{s.note}</p>}
-                  <p>
-                    <Link
-                      className="text-link"
-                      href={`/contact?service=${encodeURIComponent(s.slug)}`}
-                      aria-label={`Request a quote for ${s.title}`}
-                    >
-                      Request a quote <ArrowRight />
-                    </Link>
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <ServiceAccordion services={services} />
         </div>
       </section>
 
-      <CtaBand
-        heading="Have something else in mind?"
+      <section className="chapter" aria-labelledby="process-title">
+        <div className="container">
+          <div className="chapter-head">
+            <Reveal>
+              <Stop num="01" label="Booking" />
+            </Reveal>
+            <Reveal variant="lines">
+              <h2 id="process-title" className="display-lg">
+                <Lines lines={["Three stops,", <em key="e">one clear plan.</em>]} />
+              </h2>
+            </Reveal>
+          </div>
+          <Reveal>
+            <Journey />
+          </Reveal>
+        </div>
+      </section>
+
+      <Scene
+        vehicle={closing}
+        lines={["Something else", <em key="e">in mind?</em>]}
         body="If your trip doesn’t fit neatly into a category, describe it in your request and we’ll let you know what we can offer."
       />
     </>

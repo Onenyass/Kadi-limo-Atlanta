@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { PageHero } from "@/components/PageHero";
+import { PageHead } from "@/components/PageHead";
+import { Reveal } from "@/components/Reveal";
 import { RideRequestForm } from "@/components/RideRequestForm";
 import { NETLIFY_FORM_NAME, siteConfig } from "@/lib/config";
 import { getFleet, getServices, getSettings } from "@/lib/content";
@@ -15,45 +16,26 @@ export const metadata: Metadata = pageMetadata({
 
 export default async function ContactPage() {
   const [settings, services, fleet] = await Promise.all([getSettings(), getServices(), getFleet()]);
-  const serviceOptions = services.map((s) => ({ value: s.slug, label: s.title }));
-  const vehicleOptions = fleet.map((v) => ({ value: v.slug, label: v.name }));
-
-  const form = (
-    <RideRequestForm
-      mode={siteConfig.formMode}
-      formName={NETLIFY_FORM_NAME}
-      services={serviceOptions}
-      vehicles={vehicleOptions}
-      email={settings.email}
-      businessName={settings.businessName}
-    />
-  );
 
   return (
     <>
-      <PageHero
-        eyebrow="Contact"
-        title={
-          <>
-            Request a <em>ride</em>
-          </>
-        }
-        intro={settings.contactIntro}
-      />
+      <PageHead num="00" label="Request a ride" lines={["Where are", <em key="e">you headed?</em>]}>
+        <p className="lede">{settings.contactIntro}</p>
+      </PageHead>
 
-      <section className="section light" aria-label="Contact details and ride request form">
+      <section className="chapter ivory" aria-label="Ride request" style={{ paddingTop: "clamp(56px, 8vw, 112px)" }}>
         <div className="container contact-grid">
-          <aside className="contact-aside" aria-labelledby="contact-details-title">
+          <Reveal as="aside" className="contact-aside contact-aside--after" aria-labelledby="contact-details-title">
             <div style={{ display: "grid", gap: 16 }}>
               <h2 id="contact-details-title" className="display-sm">
-                Get in touch
+                Three short steps
               </h2>
               <p className="muted">
-                The quickest way to reach us is the request form. Include as much detail as you can
-                and we’ll reply with availability and a quote.
+                Tell us about the occasion, the journey and how to reach you. We’ll reply with
+                availability and a quote.
               </p>
             </div>
-            <ul className="contact-list">
+            <ul className="details">
               <li>
                 <span className="label">Phone</span>
                 {settings.phone ? (
@@ -85,15 +67,22 @@ export default async function ContactPage() {
                 )}
               </li>
             </ul>
-            <p className="notice">
-              <span>
-                <strong>Requests are not bookings.</strong> We’ll confirm availability, vehicle and
-                quote before anything is reserved.
-              </span>
+            <p className="note">
+              <strong>Requests are not bookings.</strong> We’ll confirm availability, vehicle and
+              quote before anything is reserved.
             </p>
-          </aside>
+          </Reveal>
 
-          {form}
+          <Reveal delay={150}>
+            <RideRequestForm
+              mode={siteConfig.formMode}
+              formName={NETLIFY_FORM_NAME}
+              services={services.map((s) => ({ value: s.slug, label: s.title }))}
+              vehicles={fleet.map((v) => ({ value: v.slug, label: v.name }))}
+              email={settings.email}
+              businessName={settings.businessName}
+            />
+          </Reveal>
         </div>
       </section>
     </>

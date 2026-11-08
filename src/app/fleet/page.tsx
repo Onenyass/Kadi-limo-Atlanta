@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { CtaBand } from "@/components/CtaBand";
-import { PageHero } from "@/components/PageHero";
+import Link from "next/link";
+import { PageHead } from "@/components/PageHead";
+import { RepImage } from "@/components/RepImage";
 import { Reveal } from "@/components/Reveal";
-import { VehicleCard } from "@/components/VehicleCard";
+import { Scene } from "@/components/Scene";
 import { getFleet } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo";
 
@@ -15,47 +16,79 @@ export const metadata: Metadata = pageMetadata({
 
 export default async function FleetPage() {
   const fleet = await getFleet();
-  const usingIllustrations = fleet.some((v) => !v.image);
   const usingRepresentative = fleet.some((v) => v.image?.isRepresentative);
+  const usingIllustrations = fleet.some((v) => !v.image);
+  const total = String(fleet.length).padStart(2, "0");
+  const closing = fleet.find((v) => v.category === "luxury" && v.image) ?? fleet.find((v) => v.image);
 
   return (
     <>
-      <PageHero
-        eyebrow="The fleet"
-        title={
-          <>
-            Black vehicles for <em>every</em> kind of trip
-          </>
-        }
-        intro="From full-size SUVs to a classic stretch limousine, choose the vehicle that suits your trip — or tell us about your plans and we’ll recommend one."
-      />
+      <PageHead num="00" label="The fleet" lines={["Black vehicles,", <em key="e">every kind of trip.</em>]}>
+        <p className="lede">
+          From full-size SUVs to a classic stretch limousine, choose the vehicle that suits your
+          trip, or tell us your plans and we’ll recommend one.
+        </p>
+        <p className="note note--night">
+          <strong>Availability varies by date.</strong> We confirm which vehicles are available,
+          and the details of each, when we reply to your request.
+          {usingRepresentative &&
+            " Images marked “Representative image” show the vehicle type, not Kadi’s own vehicle."}
+          {usingIllustrations && " Illustrations are shown where no image is available yet."}
+        </p>
+      </PageHead>
 
-      <section className="section" aria-label="Vehicles">
+      <section className="night-deep" aria-label="Vehicles">
         <div className="container">
-          <div style={{ display: "grid", gap: 12, marginBottom: 40 }}>
-            <p className="notice">
-              <span>
-                <strong>Availability varies by date.</strong> We’ll confirm which vehicles are
-                available — and the details of each — when we reply to your request.
-                {usingIllustrations &&
-                  " Illustrations are shown where vehicle photos are not yet available."}
-                {usingRepresentative &&
-                  " Images marked “Representative image” show the vehicle type, not Kadi’s own vehicle."}
-              </span>
-            </p>
-          </div>
-          <ul className="fleet-grid fleet-grid--3">
+          <ol>
             {fleet.map((v, i) => (
-              <Reveal as="li" key={v.slug} delay={(i % 3) * 80}>
-                <VehicleCard vehicle={v} headingLevel="h2" />
-              </Reveal>
+              <li key={v.slug} id={v.slug} className="plate">
+                <Reveal variant="curtain" className="plate__media">
+                  <RepImage
+                    image={v.image}
+                    category={v.category}
+                    name={v.name}
+                    sizes="(min-width: 960px) 62vw, 100vw"
+                    parallax
+                    priority={i === 0}
+                  />
+                </Reveal>
+                <Reveal className="plate__body" delay={150}>
+                  <div className="plate__index">
+                    <span className="plate__num" aria-hidden="true">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span className="small-caps">
+                      {v.kind || "Vehicle"} <span aria-hidden="true">· {String(i + 1).padStart(2, "0")}/{total}</span>
+                    </span>
+                  </div>
+                  <h2 className="plate__name">{v.name}</h2>
+                  <p className="plate__desc">{v.description}</p>
+                  {v.confirmedDetails.length > 0 && (
+                    <ul className="chips" aria-label={`${v.name} details`}>
+                      {v.confirmedDetails.map((d) => (
+                        <li key={d}>{d}</li>
+                      ))}
+                    </ul>
+                  )}
+                  <div>
+                    <Link
+                      className="link-arrow"
+                      href={`/contact?vehicle=${encodeURIComponent(v.slug)}`}
+                      aria-label={`Request availability for the ${v.name}`}
+                    >
+                      Request availability <span className="link-arrow__line" aria-hidden="true" />
+                    </Link>
+                  </div>
+                </Reveal>
+              </li>
             ))}
-          </ul>
+          </ol>
         </div>
       </section>
 
-      <CtaBand
-        heading="Not sure which vehicle fits?"
+      <Scene
+        vehicle={closing}
+        lines={["Not sure which", <em key="e">vehicle fits?</em>]}
         body="Tell us how many people are traveling and what the occasion is. We’ll suggest the options available for your date."
       />
     </>

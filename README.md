@@ -20,10 +20,27 @@ transportation business in Atlanta, Georgia.
 | ----------- | ------------------------------------------------------------------------------ |
 | `/`         | Hero, introduction, featured services, selected vehicles, booking steps, CTA   |
 | `/fleet`    | One card per planned vehicle, each with a "Request availability" link          |
-| `/services` | Nine services, each with description and "Request a quote" link                |
+| `/services` | Nine services in an expandable index, each with a "Request a quote" link       |
 | `/about`    | Company overview and how Kadi works (no invented history or credentials)       |
-| `/contact`  | Contact placeholders + ride-request form (prefills from `?service=` / `?vehicle=`) |
+| `/contact`  | Three-step ride request (prefills from `?service=` / `?vehicle=`) + contact placeholders |
 | `/privacy`  | Placeholder until the owner supplies a reviewed privacy policy                 |
+
+## Design: "Night Route"
+
+Cinematic, editorial art direction: deep black-green, warm ivory and restrained brass,
+with Instrument Serif display type over Manrope.
+
+- **Signature:** a hairline brass route with numbered stops. Each page starts at stop 00,
+  and its chapters count up from there. On wide screens, a fixed route rail fills as you scroll.
+- **Opening scene:** a full-bleed vehicle that "lights up" while the headline rises line by line.
+- **Fleet:** the home page stage is an accessible tab list (click, arrow keys, Home/End, or
+  swipe on phones). The Fleet page uses editorial plates with parallax imagery.
+- **Services:** an expandable index; `/services#slug` opens that service.
+- **Request:** a three-step flow (Occasion → Journey → Details) with a review before
+  sending. It uses the same Netlify field names as before.
+- **Motion:** page entrance, masked headings, curtain image reveals and parallax. It is
+  short and eased, and fully disabled under `prefers-reduced-motion`.
+- **Imagery:** all vehicle images are representative and carry a visible label.
 
 ## Quick start
 
