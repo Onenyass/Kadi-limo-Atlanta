@@ -1,8 +1,10 @@
 # Deployment (Netlify)
 
-This project has **not** been deployed yet — no Netlify access was available when it
-was built. These steps deploy a **preview** on a `*.netlify.app` address. They do not
-touch `kadilimoatl.com`.
+**Current preview:** <https://kadi-limo-atl-preview.netlify.app>. This is Netlify site
+`kadi-limo-atl-preview`, linked to `Onenyass/Kadi-limo-Atlanta` on branch
+`claude/kadi-limo-website-cj9hfl`. Every push to that branch redeploys it. Netlify
+Forms is enabled and the `ride-request` form is registered. The steps below document
+how it was set up, and how to recreate it if needed. They do not touch `kadilimoatl.com`.
 
 ## 1. Create the Netlify site
 
@@ -57,7 +59,9 @@ After the first deploy:
    click it, then **Deploys → Trigger deploy** so the form is registered.
 2. Confirm a form named **ride-request** is listed.
 3. Submit a test request on the preview site. It should say "your request was received",
-   and the entry should appear under **Forms → ride-request**. Until form detection is
+   and the entry should appear under **Forms → ride-request**. Obvious test entries
+   (e.g. "TEST", example.com emails) may land in the **Spam** tab; check there too.
+   Until form detection is
    enabled, the site shows "could not be sent" instead. That is expected and honest.
 4. **Notifications:** under **Site configuration → Notifications → Emails and webhooks →
    Form submission notifications**, add an email notification to the owner's address.

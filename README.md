@@ -7,6 +7,9 @@ transportation business in Atlanta, Georgia.
 - **CMS:** Sanity (optional — the site runs on built-in seed content until a Sanity project is connected)
 - **Hosting:** Netlify (Next.js runtime + Netlify Forms for the ride-request form)
 
+> **Preview:** <https://kadi-limo-atl-preview.netlify.app> (Netlify, auto-deploys from
+> `claude/kadi-limo-website-cj9hfl`).
+>
 > **Status:** preview build. The live domain `kadilimoatl.com` is **not** connected
 > to this project, and its WordPress "Coming Soon" page and DNS are untouched.
 > Preview deployments are `noindex` until `NEXT_PUBLIC_SITE_INDEXABLE=true`.

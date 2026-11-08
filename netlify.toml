@@ -22,9 +22,5 @@
   # NEXT_PUBLIC_SITE_URL is optional: Netlify's own URL / DEPLOY_PRIME_URL are used
   # automatically when it is not set (see src/lib/config.ts).
 
-# Extra safeguard: tell crawlers not to index any page of the preview.
-# Remove only at launch, together with NEXT_PUBLIC_SITE_INDEXABLE=true.
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Robots-Tag = "noindex, nofollow"
+# The X-Robots-Tag noindex header is sent by next.config.ts while
+# NEXT_PUBLIC_SITE_INDEXABLE is not "true".
