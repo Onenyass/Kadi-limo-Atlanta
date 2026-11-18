@@ -75,6 +75,8 @@ export function SiteFooter({ settings, services }: { settings: SiteSettings; ser
           <p>
             <span aria-hidden="true">33.749° N · 84.388° W · </span>
             <Link href="/privacy">Privacy</Link>
+            <span aria-hidden="true"> · </span>
+            <a href="https://ablaye.com/">Powered by ABLAYE</a>
           </p>
         </div>
       </div>
